@@ -668,6 +668,62 @@ footer{
   .portfolio-video-grid{grid-template-columns:1fr}
   .tab-btn{padding:12px 24px}
 }
+
+/* ── SERVICES PRICING ── */
+#services-pricing{
+  padding:120px 80px;max-width:1400px;margin:0 auto;
+}
+.pricing-header{text-align:center;margin-bottom:64px}
+.pricing-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;
+  margin-bottom:80px;
+}
+.pricing-card{
+  background:#0d0d1a;border:1px solid rgba(124,58,237,0.2);border-radius:12px;
+  padding:2rem;display:flex;flex-direction:column;
+  transition:border-color 0.3s,transform 0.3s;
+}
+.pricing-card:hover{
+  border-color:rgba(124,58,237,0.7);transform:translateY(-4px);
+}
+.pricing-card-icon{color:#7c3aed;margin-bottom:1rem}
+.pricing-card-icon svg{width:32px;height:32px;display:block}
+.pricing-card-title{
+  font-weight:700;text-transform:uppercase;color:var(--white);
+  font-size:1rem;letter-spacing:0.06em;margin-bottom:0.75rem;
+}
+.pricing-card-list{
+  list-style:none;padding:0;margin:0 0 1.5rem;flex:1;
+  color:rgba(255,255,255,0.6);font-size:0.85rem;line-height:1.8;
+}
+.pricing-btn{
+  display:inline-block;border:1px solid #7c3aed;color:#7c3aed;
+  background:transparent;padding:8px 20px;border-radius:4px;
+  font-size:0.8rem;letter-spacing:0.1em;text-transform:uppercase;
+  text-decoration:none;text-align:center;
+  transition:background 0.3s,color 0.3s;cursor:pointer;
+}
+.pricing-btn:hover{background:#7c3aed;color:#fff}
+.pricing-booking{
+  background:#0d0d1a;border:1px solid rgba(124,58,237,0.3);border-radius:12px;
+  padding:2rem;text-align:center;color:rgba(255,255,255,0.4);
+  font-size:0.9rem;min-height:400px;
+  display:flex;align-items:center;justify-content:center;
+}
+.pricing-booking-head{
+  text-align:center;margin-bottom:12px;
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(2rem,4vw,3rem);letter-spacing:0.06em;color:var(--white);
+}
+.pricing-booking-sub{
+  text-align:center;color:rgba(255,255,255,0.4);
+  font-size:0.9rem;margin-bottom:2rem;
+}
+@media(max-width:1024px){#services-pricing{padding:100px 40px}}
+@media(max-width:768px){
+  #services-pricing{padding:80px 24px}
+  .pricing-grid{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
@@ -680,7 +736,7 @@ footer{
   <a href="#hero" class="nav-logo">FREE GAME <span>PRODUCTIONS</span></a>
   <ul class="nav-links">
     <li><a href="#about">About</a></li>
-    <li><a href="#services">Services</a></li>
+    <li><a href="#services-pricing">Services</a></li>
     <li><a href="#credits">Credits</a></li>
     <li><a href="#booking">Booking</a></li>
   </ul>
@@ -873,6 +929,114 @@ footer{
   </div>
 </section>
 
+<!-- SERVICES & BOOKING -->
+<section id="services-pricing">
+  <div class="pricing-header reveal">
+    <span class="section-label">Services</span>
+    <h2 class="section-title">What We Offer</h2>
+    <div class="section-divider" style="margin:28px auto"></div>
+  </div>
+  <div class="pricing-grid">
+
+    <!-- Card 1: Audio Production -->
+    <div class="pricing-card reveal">
+      <div class="pricing-card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </div>
+      <p class="pricing-card-title">Audio Production</p>
+      <ul class="pricing-card-list">
+        <li>Studio Recording</li>
+        <li>Professional Mixing</li>
+        <li>Expert Mastering</li>
+        <li>Beat Production &amp; Arrangement</li>
+        <li>Contact for pricing</li>
+      </ul>
+      <a href="#booking" class="pricing-btn">Book Now</a>
+    </div>
+
+    <!-- Card 2: Live Sound -->
+    <div class="pricing-card reveal" style="transition-delay:0.05s">
+      <div class="pricing-card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><path d="M12 18a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/><line x1="12" y1="6" x2="12" y2="6.01"/></svg>
+      </div>
+      <p class="pricing-card-title">Live Sound</p>
+      <ul class="pricing-card-list">
+        <li>FOH Engineering</li>
+        <li>Monitor Mixing</li>
+        <li>System Design &amp; Setup</li>
+        <li>Stage &amp; Backline Coordination</li>
+        <li>Contact for pricing</li>
+      </ul>
+      <a href="#booking" class="pricing-btn">Book Now</a>
+    </div>
+
+    <!-- Card 3: Visual Production -->
+    <div class="pricing-card reveal" style="transition-delay:0.1s">
+      <div class="pricing-card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+      </div>
+      <p class="pricing-card-title">Visual Production</p>
+      <ul class="pricing-card-list">
+        <li>Music Video Direction</li>
+        <li>Lighting Design</li>
+        <li>Color Grade &amp; Post</li>
+        <li>EPK &amp; Press Content</li>
+        <li>Contact for pricing</li>
+      </ul>
+      <a href="#booking" class="pricing-btn">Book Now</a>
+    </div>
+
+    <!-- Card 4: Photography -->
+    <div class="pricing-card reveal" style="transition-delay:0.15s">
+      <div class="pricing-card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+      </div>
+      <p class="pricing-card-title">Photography</p>
+      <ul class="pricing-card-list">
+        <li>Indoor Photo Session — $350</li>
+        <li>Event Photography — $200</li>
+        <li>One on One Learning — $350</li>
+      </ul>
+      <a href="#booking" class="pricing-btn">Book Now</a>
+    </div>
+
+    <!-- Card 5: Graphics -->
+    <div class="pricing-card reveal" style="transition-delay:0.2s">
+      <div class="pricing-card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
+      </div>
+      <p class="pricing-card-title">Graphics</p>
+      <ul class="pricing-card-list">
+        <li>Flyers — $50</li>
+        <li>Logos — $50</li>
+      </ul>
+      <a href="#booking" class="pricing-btn">Book Now</a>
+    </div>
+
+    <!-- Card 6: Marketing -->
+    <div class="pricing-card reveal" style="transition-delay:0.25s">
+      <div class="pricing-card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 8s-4 5-10 5S2 8 2 8"/><path d="M3 12v5a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5"/><line x1="12" y1="17" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/><path d="M5 8V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v3"/></svg>
+      </div>
+      <p class="pricing-card-title">Marketing</p>
+      <ul class="pricing-card-list">
+        <li>Social Media Package — $500</li>
+        <li>Artist Package — $500</li>
+      </ul>
+      <a href="#booking" class="pricing-btn">Book Now</a>
+    </div>
+
+  </div>
+
+  <!-- Acuity booking placeholder -->
+  <h2 class="pricing-booking-head reveal">Book Your Session</h2>
+  <p class="pricing-booking-sub reveal">Ready to create something real? Select your service above and fill out the form below.</p>
+  <div class="pricing-booking">
+    <!-- TODO: Replace with Acuity embed code -->
+    Booking calendar coming soon
+  </div>
+</section>
+
 <!-- NOTABLE CREDITS -->
 <section id="credits">
   <p class="credits-label reveal">Who We've Worked With</p>
@@ -997,7 +1161,7 @@ footer{
     <a href="#hero" class="footer-logo">FREE GAME <span>PRODUCTIONS</span></a>
     <ul class="footer-links">
       <li><a href="#about">About</a></li>
-      <li><a href="#services">Services</a></li>
+      <li><a href="#services-pricing">Services</a></li>
       <li><a href="#credits">Credits</a></li>
       <li><a href="#booking">Booking</a></li>
     </ul>
