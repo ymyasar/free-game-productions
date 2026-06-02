@@ -662,6 +662,7 @@ footer{
 .audio-waveform-anim{
   display:flex;align-items:center;justify-content:center;
   gap:4px;height:48px;margin-bottom:1.5rem;
+  position:relative;z-index:2;
 }
 .audio-waveform-anim span{
   display:block;width:4px;border-radius:2px;
@@ -806,7 +807,7 @@ footer{
     <button class="tab-btn" data-tab="photo">Photo</button>
     <button class="tab-btn" data-tab="video">Video</button>
   </div>
-  <div class="tab-panel active" id="tab-audio" style="position:relative;min-height:700px;background:radial-gradient(ellipse at center,rgba(124,58,237,0.08) 0%,transparent 70%)">
+  <div class="tab-panel active" id="tab-audio" style="position:relative;z-index:0;overflow:hidden;min-height:700px;background:radial-gradient(ellipse at center,rgba(124,58,237,0.08) 0%,transparent 70%)">
     <!-- Apple Music Playlist — Mixed by Dajpway -->
     <div style="padding:2rem 0;background:transparent">
       <div id="waveform-wrap" style="position:relative;overflow:visible;display:flex;justify-content:center;">
@@ -825,9 +826,9 @@ footer{
           <span style="animation-delay:1.1s"></span>
         </div>
       </div>
-      <p style="font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:0.1em;color:#ffffff;text-align:center;margin-bottom:1rem;">Mixed by Dajpway</p>
-      <p style="font-size:0.65rem;letter-spacing:0.25em;text-transform:uppercase;color:#7c3aed;text-align:center;margin-bottom:1.5rem;">Curated Playlist</p>
-      <div style="background:#0d0d1a;border:1px solid rgba(124,58,237,0.3);border-radius:16px;padding:1.5rem;max-width:900px;margin:0 auto;box-shadow:0 0 40px rgba(124,58,237,0.1);">
+      <p style="font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:0.1em;color:#ffffff;text-align:center;margin-bottom:1rem;position:relative;z-index:2;">Mixed by Dajpway</p>
+      <p style="font-size:0.65rem;letter-spacing:0.25em;text-transform:uppercase;color:#7c3aed;text-align:center;margin-bottom:1.5rem;position:relative;z-index:2;">Curated Playlist</p>
+      <div style="background:#0d0d1a;border:1px solid rgba(124,58,237,0.3);border-radius:16px;padding:1.5rem;max-width:900px;margin:0 auto;box-shadow:0 0 40px rgba(124,58,237,0.1);position:relative;z-index:3;">
         <iframe allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write" frameborder="0" height="450" style="width:100%;max-width:900px;overflow:hidden;border-radius:10px;display:block;margin:0 auto;" sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation" src="https://embed.music.apple.com/us/playlist/mixed-by-dajpway/pl.u-aZb0kd7I9Exeaq"></iframe>
       </div>
       <div style="margin-top:1.5rem;text-align:center;">
@@ -1141,17 +1142,16 @@ footer{
     function rf(a,b){return (a + Math.random()*(b-a)).toFixed(2);}
     function pick(a){return a[Math.floor(Math.random()*a.length)];}
 
-    var defs = [];
-    /* Type A — SHOOT OUT: 8 left, 8 right */
-    for(var i=0;i<8;i++) defs.push({kf:'shoot-note',tx:ri(-700,-200),ty:ri(-200,-50), rot:ri(-30,30),dur:rf(2.5,4.5)});
-    for(var i=0;i<8;i++) defs.push({kf:'shoot-note',tx:ri(200,700),  ty:ri(-200,-50), rot:ri(-30,30),dur:rf(2.5,4.5)});
-    /* Type B — FALL SIDES: 6 left, 6 right */
-    for(var i=0;i<6;i++) defs.push({kf:'fall-note', tx:ri(-400,-100),ty:ri(200,600),  rot:ri(-20,20),dur:rf(3,5.5)});
-    for(var i=0;i<6;i++) defs.push({kf:'fall-note', tx:ri(100,400),  ty:ri(200,600),  rot:ri(-20,20),dur:rf(3,5.5)});
-    /* Type C — RISE UP: 8 notes */
-    for(var i=0;i<8;i++) defs.push({kf:'rise-note', tx:ri(-80,80),   ty:ri(-400,-150),rot:ri(-20,20),dur:rf(2,4)});
+    var panel = document.getElementById('tab-audio');
 
-    defs.forEach(function(d){
+    /* Type A — SHOOT OUT: 8 left, 8 right — spawn from waveform center */
+    var wrapDefs = [];
+    for(var i=0;i<8;i++) wrapDefs.push({kf:'shoot-note',tx:ri(-700,-200),ty:ri(-200,-50), rot:ri(-30,30),dur:rf(2.5,4.5)});
+    for(var i=0;i<8;i++) wrapDefs.push({kf:'shoot-note',tx:ri(200,700),  ty:ri(-200,-50), rot:ri(-30,30),dur:rf(2.5,4.5)});
+    /* Type C — RISE UP: 8 notes — spawn from waveform center */
+    for(var i=0;i<8;i++) wrapDefs.push({kf:'rise-note', tx:ri(-80,80),   ty:ri(-400,-150),rot:ri(-20,20),dur:rf(2,4)});
+
+    wrapDefs.forEach(function(d){
       var n = document.createElement('span');
       n.textContent = pick(noteChars);
       n.style.cssText = [
@@ -1170,6 +1170,32 @@ footer{
       ].join(';');
       wrap.appendChild(n);
     });
+
+    /* Type B — FALL SIDES: 6 left, 6 right — spawn from panel side margins */
+    if(panel){
+      var panelDefs = [];
+      for(var i=0;i<6;i++) panelDefs.push({left:rf(5,20), tx:ri(-400,-100),ty:ri(200,600),rot:ri(-20,20),dur:rf(3,5.5)});
+      for(var i=0;i<6;i++) panelDefs.push({left:rf(80,95),tx:ri(100,400),  ty:ri(200,600),rot:ri(-20,20),dur:rf(3,5.5)});
+      panelDefs.forEach(function(d){
+        var n = document.createElement('span');
+        n.textContent = pick(noteChars);
+        n.style.cssText = [
+          'position:absolute',
+          'left:'+ d.left +'%',
+          'top:'+ rf(5,15) +'%',
+          'color:'    + pick(colors),
+          'font-size:'+ ri(12,26) + 'px',
+          'pointer-events:none',
+          'z-index:1',
+          'transform-origin:center',
+          '--tx:'+ d.tx +'px',
+          '--ty:'+ d.ty +'px',
+          '--rot:'+ d.rot +'deg',
+          'animation:fall-note '+ d.dur +'s ease-in-out '+ rf(0,5) +'s infinite'
+        ].join(';');
+        panel.appendChild(n);
+      });
+    }
   });
 })();
 </script>
