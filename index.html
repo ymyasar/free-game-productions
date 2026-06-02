@@ -641,9 +641,11 @@ footer{
   0%  {transform:scaleY(0.2)}
   100%{transform:scaleY(1.0)}
 }
-@keyframes float-note{
-  from{transform:translateY(0) scale(0.8);opacity:var(--note-start-opacity,0.7)}
-  to  {transform:translateY(var(--note-float-dist,-150px)) scale(1.2);opacity:0}
+@keyframes arc-note{
+  0%  {transform:translateX(0) translateY(0) rotate(0deg) scale(0.5);opacity:0}
+  10% {opacity:1}
+  60% {transform:translateX(var(--arc-x)) translateY(var(--arc-y)) rotate(var(--arc-rot)) scale(1.2);opacity:0.9}
+  100%{transform:translateX(var(--arc-x)) translateY(var(--arc-y)) rotate(var(--arc-rot)) scale(0.8);opacity:0}
 }
 .audio-waveform-anim{
   display:flex;align-items:center;justify-content:center;
@@ -1119,38 +1121,38 @@ footer{
 <script>
 (function(){
   document.addEventListener('DOMContentLoaded', function(){
-    var panel = document.getElementById('tab-audio');
-    if(!panel) return;
+    var wrap = document.getElementById('waveform-wrap');
+    if(!wrap) return;
     var noteChars = ['♩','♪','♫','♬','♭','♮','♯','𝄞','𝄢'];
     var colors    = ['#7c3aed','#ffffff'];
     for(var i = 0; i < 28; i++){
       var n = document.createElement('span');
       n.textContent = noteChars[Math.floor(Math.random() * noteChars.length)];
-      var duration  = (2 + Math.random() * 2).toFixed(2);
-      var delay     = (Math.random() * 4).toFixed(2);
-      var size      = Math.floor(12 + Math.random() * 17);
-      var top       = Math.floor(20 + Math.random() * 71);
-      var floatDist = -Math.floor(120 + Math.random() * 81);
-      var startOp   = (0.4 + Math.random() * 0.5).toFixed(2);
-      var color     = colors[Math.floor(Math.random() * colors.length)];
-      /* Split into left (0-18%) and right (82-100%) zones, 14 per side */
-      var left = i < 14
-        ? (Math.random() * 18).toFixed(2)
-        : (82 + Math.random() * 18).toFixed(2);
+      var duration = (2.5 + Math.random() * 2.5).toFixed(2);
+      var delay    = (Math.random() * 5).toFixed(2);
+      var size     = Math.floor(14 + Math.random() * 13);
+      var color    = colors[Math.floor(Math.random() * colors.length)];
+      /* First 14 arc left, next 14 arc right */
+      var arcX = i < 14
+        ? -Math.floor(200 + Math.random() * 401)
+        :  Math.floor(200 + Math.random() * 401);
+      var arcY   = -Math.floor(80  + Math.random() * 221);
+      var arcRot = Math.floor(-30 + Math.random() * 61);
       n.style.cssText = [
         'position:absolute',
+        'left:50%',
+        'top:50%',
         'color:' + color,
-        'opacity:0',
-        'left:' + left + '%',
-        'top:' + top + '%',
         'font-size:' + size + 'px',
         'pointer-events:none',
         'z-index:1',
-        '--note-float-dist:' + floatDist + 'px',
-        '--note-start-opacity:' + startOp,
-        'animation:float-note ' + duration + 's ease-in-out ' + delay + 's infinite'
+        'transform-origin:center',
+        '--arc-x:' + arcX + 'px',
+        '--arc-y:' + arcY + 'px',
+        '--arc-rot:' + arcRot + 'deg',
+        'animation:arc-note ' + duration + 's ease-in-out ' + delay + 's infinite'
       ].join(';');
-      panel.appendChild(n);
+      wrap.appendChild(n);
     }
   });
 })();
