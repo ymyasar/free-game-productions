@@ -779,7 +779,8 @@ footer{
 </section>
 
 <!-- PORTFOLIO -->
-<section id="portfolio">
+<section id="portfolio" style="position:relative">
+  <canvas id="noteCanvas" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:2;"></canvas>
   <div class="portfolio-header reveal">
     <span class="section-label">Portfolio</span>
     <h2 class="section-title">The Work</h2>
@@ -1114,17 +1115,16 @@ footer{
 })();
 </script>
 
-<canvas id="noteCanvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;"></canvas>
-
 <script>
 (function() {
   const canvas = document.getElementById('noteCanvas');
   const ctx = canvas.getContext('2d');
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+  const section = canvas.parentElement;
+  canvas.width = section.offsetWidth;
+  canvas.height = section.offsetHeight;
   window.addEventListener('resize', () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    canvas.width = section.offsetWidth;
+    canvas.height = section.offsetHeight;
   });
 
   const NOTES = ['♩','♪','♫','♬','♭','♮','♯','𝄞','𝄢'];
@@ -1132,9 +1132,10 @@ footer{
 
   function getWaveformPos() {
     const el = document.querySelector('.portfolio-waveform');
-    if (!el) return { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+    if (!el) return { x: canvas.width / 2, y: canvas.height / 2 };
+    const canvasParent = canvas.parentElement.getBoundingClientRect();
     const r = el.getBoundingClientRect();
-    return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+    return { x: r.left - canvasParent.left + r.width / 2, y: r.top - canvasParent.top + r.height / 2 };
   }
 
   class Note {
