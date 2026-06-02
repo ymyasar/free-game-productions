@@ -1121,25 +1121,31 @@ footer{
   document.addEventListener('DOMContentLoaded', function(){
     var panel = document.getElementById('tab-audio');
     if(!panel) return;
-    var notes = ['♩','♪','♫','♬'];
-    for(var i = 0; i < 20; i++){
+    var noteChars = ['♩','♪','♫','♬','♭','♮','♯','𝄞','𝄢'];
+    var colors    = ['#7c3aed','#ffffff'];
+    for(var i = 0; i < 28; i++){
       var n = document.createElement('span');
-      n.textContent = notes[i % notes.length];
+      n.textContent = noteChars[Math.floor(Math.random() * noteChars.length)];
       var duration  = (2 + Math.random() * 2).toFixed(2);
       var delay     = (Math.random() * 4).toFixed(2);
       var size      = Math.floor(12 + Math.random() * 17);
-      var left      = Math.floor(Math.random() * 101);
       var top       = Math.floor(20 + Math.random() * 71);
       var floatDist = -Math.floor(120 + Math.random() * 81);
       var startOp   = (0.4 + Math.random() * 0.5).toFixed(2);
+      var color     = colors[Math.floor(Math.random() * colors.length)];
+      /* Split into left (0-18%) and right (82-100%) zones, 14 per side */
+      var left = i < 14
+        ? (Math.random() * 18).toFixed(2)
+        : (82 + Math.random() * 18).toFixed(2);
       n.style.cssText = [
         'position:absolute',
-        'color:#7c3aed',
+        'color:' + color,
         'opacity:0',
         'left:' + left + '%',
         'top:' + top + '%',
         'font-size:' + size + 'px',
         'pointer-events:none',
+        'z-index:1',
         '--note-float-dist:' + floatDist + 'px',
         '--note-start-opacity:' + startOp,
         'animation:float-note ' + duration + 's ease-in-out ' + delay + 's infinite'
