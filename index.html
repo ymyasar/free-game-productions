@@ -641,17 +641,23 @@ footer{
   0%  {transform:scaleY(0.2)}
   100%{transform:scaleY(1.0)}
 }
-@keyframes arc-note{
-  0%  {transform:translateX(0) translateY(0) rotate(0deg) scale(0.5);opacity:0}
-  10% {opacity:1}
-  60% {transform:translateX(var(--arc-x)) translateY(var(--arc-y)) rotate(var(--arc-rot)) scale(1.2);opacity:0.9}
-  100%{transform:translateX(var(--arc-x)) translateY(var(--arc-y)) rotate(var(--arc-rot)) scale(0.8);opacity:0}
+@keyframes shoot-note{
+  0%  {transform:translateX(0) translateY(0) rotate(0deg) scale(0.6);opacity:0}
+  5%  {opacity:1}
+  90% {opacity:1}
+  100%{transform:translateX(var(--tx)) translateY(var(--ty)) rotate(var(--rot)) scale(1);opacity:0}
 }
 @keyframes fall-note{
-  0%  {transform:translateX(0) translateY(0) rotate(0deg);opacity:0}
-  10% {opacity:0.8}
-  90% {opacity:0.8}
-  100%{transform:translateX(var(--fall-x)) translateY(var(--fall-y)) rotate(var(--fall-rot));opacity:0}
+  0%  {transform:translateX(0) translateY(0) rotate(0deg) scale(0.6);opacity:0}
+  5%  {opacity:1}
+  90% {opacity:1}
+  100%{transform:translateX(var(--tx)) translateY(var(--ty)) rotate(var(--rot)) scale(1);opacity:0}
+}
+@keyframes rise-note{
+  0%  {transform:translateX(0) translateY(0) rotate(0deg) scale(0.6);opacity:0}
+  5%  {opacity:1}
+  90% {opacity:1}
+  100%{transform:translateX(var(--tx)) translateY(var(--ty)) rotate(var(--rot)) scale(1);opacity:0}
 }
 .audio-waveform-anim{
   display:flex;align-items:center;justify-content:center;
@@ -1131,68 +1137,39 @@ footer{
     if(!wrap) return;
     var noteChars = ['♩','♪','♫','♬','♭','♮','♯','𝄞','𝄢'];
     var colors    = ['#7c3aed','#ffffff'];
-    for(var i = 0; i < 28; i++){
+    function ri(a,b){return Math.floor(a + Math.random()*(b-a+1));}
+    function rf(a,b){return (a + Math.random()*(b-a)).toFixed(2);}
+    function pick(a){return a[Math.floor(Math.random()*a.length)];}
+
+    var defs = [];
+    /* Type A — SHOOT OUT: 8 left, 8 right */
+    for(var i=0;i<8;i++) defs.push({kf:'shoot-note',tx:ri(-700,-200),ty:ri(-200,-50), rot:ri(-30,30),dur:rf(2.5,4.5)});
+    for(var i=0;i<8;i++) defs.push({kf:'shoot-note',tx:ri(200,700),  ty:ri(-200,-50), rot:ri(-30,30),dur:rf(2.5,4.5)});
+    /* Type B — FALL SIDES: 6 left, 6 right */
+    for(var i=0;i<6;i++) defs.push({kf:'fall-note', tx:ri(-400,-100),ty:ri(200,600),  rot:ri(-20,20),dur:rf(3,5.5)});
+    for(var i=0;i<6;i++) defs.push({kf:'fall-note', tx:ri(100,400),  ty:ri(200,600),  rot:ri(-20,20),dur:rf(3,5.5)});
+    /* Type C — RISE UP: 8 notes */
+    for(var i=0;i<8;i++) defs.push({kf:'rise-note', tx:ri(-80,80),   ty:ri(-400,-150),rot:ri(-20,20),dur:rf(2,4)});
+
+    defs.forEach(function(d){
       var n = document.createElement('span');
-      n.textContent = noteChars[Math.floor(Math.random() * noteChars.length)];
-      var duration = (2.5 + Math.random() * 2.5).toFixed(2);
-      var delay    = (Math.random() * 5).toFixed(2);
-      var size     = Math.floor(14 + Math.random() * 13);
-      var color    = colors[Math.floor(Math.random() * colors.length)];
-      /* First 14 arc left, next 14 arc right */
-      var arcX = i < 14
-        ? -Math.floor(200 + Math.random() * 401)
-        :  Math.floor(200 + Math.random() * 401);
-      var arcY   = -Math.floor(80  + Math.random() * 221);
-      var arcRot = Math.floor(-30 + Math.random() * 61);
+      n.textContent = pick(noteChars);
       n.style.cssText = [
         'position:absolute',
         'left:50%',
         'top:50%',
-        'color:' + color,
-        'font-size:' + size + 'px',
+        'color:'    + pick(colors),
+        'font-size:'+ ri(12,26) + 'px',
         'pointer-events:none',
         'z-index:1',
         'transform-origin:center',
-        '--arc-x:' + arcX + 'px',
-        '--arc-y:' + arcY + 'px',
-        '--arc-rot:' + arcRot + 'deg',
-        'animation:arc-note ' + duration + 's ease-in-out ' + delay + 's infinite'
+        '--tx:'+ d.tx +'px',
+        '--ty:'+ d.ty +'px',
+        '--rot:'+ d.rot +'deg',
+        'animation:'+ d.kf +' '+ d.dur +'s ease-in-out '+ rf(0,5) +'s infinite'
       ].join(';');
       wrap.appendChild(n);
-    }
-    /* Waterfall notes — fall downward along both side margins */
-    var panel = document.getElementById('tab-audio');
-    if(panel){
-      for(var j = 0; j < 16; j++){
-        var m = document.createElement('span');
-        m.textContent = noteChars[Math.floor(Math.random() * noteChars.length)];
-        var fDuration = (3 + Math.random() * 3).toFixed(2);
-        var fDelay    = (Math.random() * 5).toFixed(2);
-        var fSize     = Math.floor(12 + Math.random() * 13);
-        var fColor    = colors[Math.floor(Math.random() * colors.length)];
-        var fLeft = j < 8
-          ? (2  + Math.random() * 13).toFixed(2)
-          : (85 + Math.random() * 13).toFixed(2);
-        var fTop  = (-5 + Math.random() * 25).toFixed(2);
-        var fY    =  Math.floor(400 + Math.random() * 301);
-        var fX    =  Math.floor(-30 + Math.random() * 61);
-        var fRot  =  Math.floor(-20 + Math.random() * 41);
-        m.style.cssText = [
-          'position:absolute',
-          'left:' + fLeft + '%',
-          'top:' + fTop + '%',
-          'color:' + fColor,
-          'font-size:' + fSize + 'px',
-          'pointer-events:none',
-          'z-index:1',
-          '--fall-x:' + fX + 'px',
-          '--fall-y:' + fY + 'px',
-          '--fall-rot:' + fRot + 'deg',
-          'animation:fall-note ' + fDuration + 's ease-in-out ' + fDelay + 's infinite'
-        ].join(';');
-        panel.appendChild(m);
-      }
-    }
+    });
   });
 })();
 </script>
