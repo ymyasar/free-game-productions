@@ -790,8 +790,8 @@ footer{
     <button class="tab-btn" data-tab="photo">Photo</button>
     <button class="tab-btn" data-tab="video">Video</button>
   </div>
-  <div class="tab-panel active" id="tab-audio" style="position:relative;z-index:0;overflow:hidden;min-height:700px;background:radial-gradient(ellipse at center,rgba(124,58,237,0.08) 0%,transparent 70%)">
-    <canvas id="noteCanvas" style="position:absolute;top:0;left:0;width:100%;pointer-events:none;z-index:1;"></canvas>
+  <div class="tab-panel active" id="tab-audio" style="position:relative;z-index:0;min-height:700px;background:radial-gradient(ellipse at center,rgba(124,58,237,0.08) 0%,transparent 70%)">
+    <canvas id="noteCanvas" style="position:absolute;top:0;left:0;width:100%;height:500px;pointer-events:none;z-index:1;overflow:hidden;"></canvas>
     <!-- Apple Music Playlist — Mixed by Dajpway -->
     <div style="padding:2rem 0;background:transparent">
       <div id="waveform-wrap" class="portfolio-waveform" style="position:relative;overflow:visible;display:flex;justify-content:center;">
@@ -1121,15 +1121,16 @@ document.addEventListener('DOMContentLoaded', function () {
   const ctx = canvas.getContext('2d');
 
   function resizeCanvas() {
-    const panel = canvas.parentElement;
-    const tabs  = document.querySelector('.portfolio-tabs');
-    canvas.width = panel.offsetWidth || window.innerWidth;
-    // Cap height to the zone from panel top to tab-buttons bottom
-    const pr = panel.getBoundingClientRect();
-    const tr = tabs ? tabs.getBoundingClientRect() : null;
-    const capH = tr ? Math.max(280, Math.abs(tr.bottom - pr.top)) : Math.max(280, (panel.offsetHeight || window.innerHeight) * 0.4);
-    canvas.height = capH;
-    canvas.style.height = capH + 'px';
+    const panel   = canvas.parentElement;
+    const heading = document.querySelector('.portfolio-header .section-title');
+    canvas.width  = panel.offsetWidth || window.innerWidth;
+    canvas.height = 500;
+    // Align canvas top with "THE WORK" heading
+    if (heading) {
+      const hr = heading.getBoundingClientRect();
+      const pr = panel.getBoundingClientRect();
+      canvas.style.top = (hr.top - pr.top) + 'px';
+    }
   }
   resizeCanvas();
   window.addEventListener('resize', resizeCanvas);
