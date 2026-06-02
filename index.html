@@ -791,7 +791,7 @@ footer{
     <button class="tab-btn" data-tab="video">Video</button>
   </div>
   <div class="tab-panel active" id="tab-audio" style="position:relative;z-index:0;overflow:hidden;min-height:700px;background:radial-gradient(ellipse at center,rgba(124,58,237,0.08) 0%,transparent 70%)">
-    <canvas id="noteCanvas" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;"></canvas>
+    <canvas id="noteCanvas" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:10;"></canvas>
     <!-- Apple Music Playlist — Mixed by Dajpway -->
     <div style="padding:2rem 0;background:transparent">
       <div id="waveform-wrap" class="portfolio-waveform" style="position:relative;overflow:visible;display:flex;justify-content:center;">
@@ -1116,96 +1116,115 @@ footer{
 
 <!-- NOTE CANVAS PARTICLE SYSTEM -->
 <script>
-const canvas = document.getElementById('noteCanvas');
-const ctx = canvas.getContext('2d');
+document.addEventListener('DOMContentLoaded', function () {
+  const canvas = document.getElementById('noteCanvas');
+  const ctx = canvas.getContext('2d');
 
-function resizeCanvas() {
-  const panel = canvas.parentElement;
-  canvas.width = panel.offsetWidth;
-  canvas.height = panel.offsetHeight;
-}
-resizeCanvas();
-window.addEventListener('resize', resizeCanvas);
+  function resizeCanvas() {
+    const panel = canvas.parentElement;
+    canvas.width  = panel.offsetWidth  || window.innerWidth;
+    canvas.height = panel.offsetHeight || window.innerHeight;
+  }
+  resizeCanvas();
+  console.log(canvas.width, canvas.height, getOrigin());
+  window.addEventListener('resize', resizeCanvas);
 
-function getOrigin() {
-  const waveform = document.querySelector('.portfolio-waveform');
-  const panel = canvas.parentElement;
-  const wr = waveform.getBoundingClientRect();
-  const pr = panel.getBoundingClientRect();
-  return {
-    x: wr.left - pr.left + wr.width / 2,
-    y: wr.top - pr.top + wr.height / 2
-  };
-}
-
-const NOTES = ['♩','♪','♫','♬','♭','♮','♯','𝄞','𝄢'];
-const COLORS = ['#7c3aed','#ffffff','#a855f7'];
-
-class Note {
-  constructor() { this.reset(); }
-  reset() {
-    const o = getOrigin();
-    this.x = o.x;
-    this.y = o.y;
-    this.char = NOTES[Math.floor(Math.random() * NOTES.length)];
-    this.color = COLORS[Math.floor(Math.random() * COLORS.length)];
-    this.size = 12 + Math.random() * 16;
-    this.alpha = 0;
-    this.life = 0;
-    this.maxLife = 120 + Math.random() * 180;
-    this.delay = Math.floor(Math.random() * 200);
-
-    const t = Math.random();
-    if (t < 0.4) {
-      const dir = Math.random() < 0.5 ? -1 : 1;
-      this.vx = dir * (1.5 + Math.random() * 3);
-      this.vy = -(0.5 + Math.random() * 2);
-      this.gravity = -0.01;
-    } else if (t < 0.7) {
-      const dir = Math.random() < 0.5 ? -1 : 1;
-      this.vx = dir * (0.5 + Math.random() * 1.5);
-      this.vy = 0.5 + Math.random() * 1.5;
-      this.gravity = 0.02;
-    } else {
-      this.vx = (Math.random() - 0.5) * 1.5;
-      this.vy = -(1 + Math.random() * 2.5);
-      this.gravity = 0.005;
+  function getOrigin() {
+    const waveform = document.querySelector('.portfolio-waveform');
+    const panel = canvas.parentElement;
+    if (waveform) {
+      const wr = waveform.getBoundingClientRect();
+      const pr = panel.getBoundingClientRect();
+      if (wr.width > 0) {
+        return {
+          x: wr.left - pr.left + wr.width / 2,
+          y: wr.top  - pr.top  + wr.height / 2
+        };
+      }
     }
-    this.active = false;
+    return { x: canvas.width / 2, y: canvas.height * 0.35 };
   }
-  update() {
-    if (this.delay > 0) { this.delay--; return; }
-    this.active = true;
-    this.life++;
-    this.x += this.vx;
-    this.vy += this.gravity;
-    this.y += this.vy;
-    this.vx *= 0.99;
-    const progress = this.life / this.maxLife;
-    if (progress < 0.1) this.alpha = progress / 0.1;
-    else if (progress > 0.7) this.alpha = 1 - (progress - 0.7) / 0.3;
-    else this.alpha = 1;
-    if (this.life >= this.maxLife) this.reset();
-  }
-  draw() {
-    if (!this.active) return;
-    ctx.save();
-    ctx.globalAlpha = this.alpha * 0.85;
-    ctx.fillStyle = this.color;
-    ctx.font = `${this.size}px serif`;
-    ctx.fillText(this.char, this.x, this.y);
-    ctx.restore();
-  }
-}
 
-const notes = Array.from({length: 40}, () => new Note());
+  const NOTES  = ['♩','♪','♫','♬','♭','♮','♯','𝄞','𝄢'];
+  const COLORS = ['#7c3aed','#ffffff','#a855f7'];
 
-function animate() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  notes.forEach(n => { n.update(); n.draw(); });
-  requestAnimationFrame(animate);
-}
-animate();
+  class Note {
+    constructor() { this.reset(); }
+    reset() {
+      const o = getOrigin();
+      this.x = o.x;
+      this.y = o.y;
+      this.char = NOTES[Math.floor(Math.random() * NOTES.length)];
+      this.color = COLORS[Math.floor(Math.random() * COLORS.length)];
+      this.size = 12 + Math.random() * 16;
+      this.alpha = 0;
+      this.life = 0;
+      this.maxLife = 120 + Math.random() * 180;
+      this.delay = Math.floor(Math.random() * 200);
+
+      const t = Math.random();
+      if (t < 0.4) {
+        const dir = Math.random() < 0.5 ? -1 : 1;
+        this.vx = dir * (1.5 + Math.random() * 3);
+        this.vy = -(0.5 + Math.random() * 2);
+        this.gravity = -0.01;
+      } else if (t < 0.7) {
+        const dir = Math.random() < 0.5 ? -1 : 1;
+        this.vx = dir * (0.5 + Math.random() * 1.5);
+        this.vy = 0.5 + Math.random() * 1.5;
+        this.gravity = 0.02;
+      } else {
+        this.vx = (Math.random() - 0.5) * 1.5;
+        this.vy = -(1 + Math.random() * 2.5);
+        this.gravity = 0.005;
+      }
+      this.active = false;
+    }
+    update() {
+      if (this.delay > 0) { this.delay--; return; }
+      this.active = true;
+      this.life++;
+      this.x += this.vx;
+      this.vy += this.gravity;
+      this.y += this.vy;
+      this.vx *= 0.99;
+      const progress = this.life / this.maxLife;
+      if (progress < 0.1) this.alpha = progress / 0.1;
+      else if (progress > 0.7) this.alpha = 1 - (progress - 0.7) / 0.3;
+      else this.alpha = 1;
+      if (this.life >= this.maxLife) this.reset();
+    }
+    draw() {
+      if (!this.active) return;
+      ctx.save();
+      ctx.globalAlpha = this.alpha * 0.85;
+      ctx.fillStyle = this.color;
+      ctx.font = `${this.size}px serif`;
+      ctx.fillText(this.char, this.x, this.y);
+      ctx.restore();
+    }
+  }
+
+  const notes = Array.from({length: 40}, () => new Note());
+  let frame = 0;
+
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    /* TEST NOTE — remove once canvas confirmed working */
+    if (frame < 300) {
+      ctx.save();
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = 'red';
+      ctx.font = '40px serif';
+      ctx.fillText('♪', canvas.width / 2, canvas.height / 2);
+      ctx.restore();
+    }
+    frame++;
+    notes.forEach(n => { n.update(); n.draw(); });
+    requestAnimationFrame(animate);
+  }
+  animate();
+});
 </script>
 </body>
 </html>
