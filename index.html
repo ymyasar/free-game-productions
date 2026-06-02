@@ -1184,6 +1184,13 @@ footer{
   const notes = Array.from({length: 30}, () => new Note());
 
   function animate() {
+    const audioPanel = document.getElementById('tab-audio');
+    const isAudioActive = audioPanel && audioPanel.classList.contains('active');
+    if (!isAudioActive) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      requestAnimationFrame(animate);
+      return;
+    }
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     notes.forEach(n => { n.update(); n.draw(); });
     requestAnimationFrame(animate);
