@@ -63,19 +63,14 @@ body::before{
 }
 .hero-grad{
   position:absolute;inset:0;z-index:0;
-  background:linear-gradient(135deg,#0a0a0a 0%,#12062a 40%,#060c1a 70%,#0a0a0a 100%);
-  background-size:400% 400%;
-  animation:hero-grad-shift 14s ease-in-out infinite;
-}
-@keyframes hero-grad-shift{
-  0%  {background-position:0% 50%}
-  33% {background-position:100% 50%}
-  66% {background-position:50% 0%}
-  100%{background-position:0% 50%}
+  background-image:url('https://www.freegameproductions.com/images/dajpway-dramatic.jpg');
+  background-size:cover;
+  background-position:center 20%;
 }
 .hero-grad::after{
   content:'';position:absolute;inset:0;
-  background:linear-gradient(to top,rgba(10,10,10,1) 0%,rgba(10,10,10,0.25) 60%,transparent 100%);
+  background:
+    linear-gradient(to top,rgba(10,10,10,1) 0%,rgba(10,10,10,0.62) 50%,rgba(10,10,10,0.45) 100%);
 }
 
 /* Hero orbs */
@@ -610,7 +605,7 @@ footer{
 <section id="about">
   <div class="about-inner">
     <div class="about-image-wrap reveal">
-      <img src="https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=800&q=80" alt="Deaunza Albright" loading="lazy">
+      <img src="https://www.freegameproductions.com/images/dajpway-dramatic.jpg" alt="Dajpway — Founder &amp; CEO of Free Game Productions" loading="lazy">
       <div class="about-pulse-overlay"></div>
       <div class="about-image-border"></div>
     </div>
