@@ -642,8 +642,8 @@ footer{
   100%{transform:scaleY(1.0)}
 }
 @keyframes float-note{
-  from{transform:translateY(0) scale(0.8);opacity:0.8}
-  to  {transform:translateY(-80px) scale(1.2);opacity:0}
+  from{transform:translateY(0) scale(0.8);opacity:var(--note-start-opacity,0.7)}
+  to  {transform:translateY(var(--note-float-dist,-150px)) scale(1.2);opacity:0}
 }
 .audio-waveform-anim{
   display:flex;align-items:center;justify-content:center;
@@ -792,7 +792,7 @@ footer{
     <button class="tab-btn" data-tab="photo">Photo</button>
     <button class="tab-btn" data-tab="video">Video</button>
   </div>
-  <div class="tab-panel active" id="tab-audio">
+  <div class="tab-panel active" id="tab-audio" style="position:relative;min-height:700px;background:radial-gradient(ellipse at center,rgba(124,58,237,0.08) 0%,transparent 70%)">
     <!-- Apple Music Playlist — Mixed by Dajpway -->
     <div style="padding:2rem 0;background:transparent">
       <div id="waveform-wrap" style="position:relative;overflow:visible;display:flex;justify-content:center;">
@@ -1119,27 +1119,32 @@ footer{
 <script>
 (function(){
   document.addEventListener('DOMContentLoaded', function(){
-    var wrap = document.getElementById('waveform-wrap');
-    if(!wrap) return;
+    var panel = document.getElementById('tab-audio');
+    if(!panel) return;
     var notes = ['♩','♪','♫','♬'];
-    for(var i = 0; i < 8; i++){
+    for(var i = 0; i < 20; i++){
       var n = document.createElement('span');
       n.textContent = notes[i % notes.length];
-      var duration = (1.8 + Math.random() * 1.2).toFixed(2);
-      var delay    = (Math.random() * 2).toFixed(2);
-      var size     = Math.floor(14 + Math.random() * 9);
-      var left     = Math.floor(Math.random() * 101);
+      var duration  = (2 + Math.random() * 2).toFixed(2);
+      var delay     = (Math.random() * 4).toFixed(2);
+      var size      = Math.floor(12 + Math.random() * 17);
+      var left      = Math.floor(Math.random() * 101);
+      var top       = Math.floor(20 + Math.random() * 71);
+      var floatDist = -Math.floor(120 + Math.random() * 81);
+      var startOp   = (0.4 + Math.random() * 0.5).toFixed(2);
       n.style.cssText = [
         'position:absolute',
         'color:#7c3aed',
         'opacity:0',
-        'top:50%',
         'left:' + left + '%',
+        'top:' + top + '%',
         'font-size:' + size + 'px',
         'pointer-events:none',
+        '--note-float-dist:' + floatDist + 'px',
+        '--note-start-opacity:' + startOp,
         'animation:float-note ' + duration + 's ease-in-out ' + delay + 's infinite'
       ].join(';');
-      wrap.appendChild(n);
+      panel.appendChild(n);
     }
   });
 })();
