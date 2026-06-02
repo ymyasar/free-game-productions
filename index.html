@@ -791,7 +791,7 @@ footer{
     <button class="tab-btn" data-tab="video">Video</button>
   </div>
   <div class="tab-panel active" id="tab-audio" style="position:relative;z-index:0;overflow:hidden;min-height:700px;background:radial-gradient(ellipse at center,rgba(124,58,237,0.08) 0%,transparent 70%)">
-    <canvas id="noteCanvas" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:10;"></canvas>
+    <canvas id="noteCanvas" style="position:absolute;top:0;left:0;width:100%;pointer-events:none;z-index:1;"></canvas>
     <!-- Apple Music Playlist — Mixed by Dajpway -->
     <div style="padding:2rem 0;background:transparent">
       <div id="waveform-wrap" class="portfolio-waveform" style="position:relative;overflow:visible;display:flex;justify-content:center;">
@@ -1122,11 +1122,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function resizeCanvas() {
     const panel = canvas.parentElement;
-    canvas.width  = panel.offsetWidth  || window.innerWidth;
-    canvas.height = panel.offsetHeight || window.innerHeight;
+    const tabs  = document.querySelector('.portfolio-tabs');
+    canvas.width = panel.offsetWidth || window.innerWidth;
+    // Cap height to the zone from panel top to tab-buttons bottom
+    const pr = panel.getBoundingClientRect();
+    const tr = tabs ? tabs.getBoundingClientRect() : null;
+    const capH = tr ? Math.max(280, Math.abs(tr.bottom - pr.top)) : Math.max(280, (panel.offsetHeight || window.innerHeight) * 0.4);
+    canvas.height = capH;
+    canvas.style.height = capH + 'px';
   }
   resizeCanvas();
-  console.log(canvas.width, canvas.height, getOrigin());
   window.addEventListener('resize', resizeCanvas);
 
   function getOrigin() {
@@ -1142,7 +1147,7 @@ document.addEventListener('DOMContentLoaded', function () {
         };
       }
     }
-    return { x: canvas.width / 2, y: canvas.height * 0.35 };
+    return { x: canvas.width / 2, y: canvas.height * 0.5 };
   }
 
   const NOTES  = ['♩','♪','♫','♬','♭','♮','♯','𝄞','𝄢'];
@@ -1154,26 +1159,22 @@ document.addEventListener('DOMContentLoaded', function () {
       const o = getOrigin();
       this.x = o.x;
       this.y = o.y;
-      this.char = NOTES[Math.floor(Math.random() * NOTES.length)];
+      this.char  = NOTES[Math.floor(Math.random() * NOTES.length)];
       this.color = COLORS[Math.floor(Math.random() * COLORS.length)];
-      this.size = 12 + Math.random() * 16;
+      this.size  = 12 + Math.random() * 16;
       this.alpha = 0;
-      this.life = 0;
+      this.life  = 0;
       this.maxLife = 120 + Math.random() * 180;
-      this.delay = Math.floor(Math.random() * 200);
+      this.delay   = Math.floor(Math.random() * 200);
 
-      const t = Math.random();
-      if (t < 0.4) {
+      if (Math.random() < 0.5) {
+        // Type A — shoot outward left or right
         const dir = Math.random() < 0.5 ? -1 : 1;
         this.vx = dir * (1.5 + Math.random() * 3);
         this.vy = -(0.5 + Math.random() * 2);
         this.gravity = -0.01;
-      } else if (t < 0.7) {
-        const dir = Math.random() < 0.5 ? -1 : 1;
-        this.vx = dir * (0.5 + Math.random() * 1.5);
-        this.vy = 0.5 + Math.random() * 1.5;
-        this.gravity = 0.02;
       } else {
+        // Type C — rise straight up with gentle sway
         this.vx = (Math.random() - 0.5) * 1.5;
         this.vy = -(1 + Math.random() * 2.5);
         this.gravity = 0.005;
@@ -1205,21 +1206,10 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  const notes = Array.from({length: 40}, () => new Note());
-  let frame = 0;
+  const notes = Array.from({length: 24}, () => new Note());
 
   function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    /* TEST NOTE — remove once canvas confirmed working */
-    if (frame < 300) {
-      ctx.save();
-      ctx.globalAlpha = 1;
-      ctx.fillStyle = 'red';
-      ctx.font = '40px serif';
-      ctx.fillText('♪', canvas.width / 2, canvas.height / 2);
-      ctx.restore();
-    }
-    frame++;
     notes.forEach(n => { n.update(); n.draw(); });
     requestAnimationFrame(animate);
   }
