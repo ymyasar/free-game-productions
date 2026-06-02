@@ -604,6 +604,54 @@ footer{
   footer{padding:50px 24px 30px}
   .footer-inner{flex-direction:column;gap:28px;text-align:center}
   .footer-bottom{flex-direction:column;gap:16px;text-align:center}
+
+  /* Booking section */
+  .booking-section,
+  #booking {
+    position: static !important;
+    transform: none !important;
+    width: 100% !important;
+    padding: 3rem 1.5rem !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 2rem !important;
+  }
+
+  /* Left and right columns stack vertically */
+  .booking-section > div,
+  #booking > div {
+    width: 100% !important;
+    min-width: unset !important;
+    float: none !important;
+  }
+
+  /* Unstick the left info column */
+  .booking-left {
+    position: static !important;
+  }
+
+  /* Form fields full width */
+  #booking input,
+  #booking textarea,
+  #booking select {
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Two-column form rows collapse to single column */
+  #booking .name-row,
+  #booking .two-col,
+  .form-row {
+    grid-template-columns: 1fr !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  /* Submit button full width */
+  #booking button,
+  #booking input[type="submit"] {
+    width: 100% !important;
+  }
 }
 
 /* ── PORTFOLIO ── */
