@@ -652,6 +652,32 @@ footer{
   #booking input[type="submit"] {
     width: 100% !important;
   }
+
+  .booking-grid,
+  .contact-grid,
+  [class*="booking"] > div:first-child,
+  [class*="contact"] > div:first-child {
+    position: static !important;
+    float: none !important;
+  }
+
+  section#booking,
+  .section-booking,
+  .booking-container {
+    display: block !important;
+  }
+
+  /* Targeted fix: .booking-inner is the exact two-column grid container */
+  .booking-inner {
+    display: flex !important;
+    flex-direction: column !important;
+    grid-template-columns: unset !important;
+  }
+
+  /* Booking policy box static on mobile */
+  .booking-right > div:first-child {
+    position: static !important;
+  }
 }
 
 /* ── PORTFOLIO ── */
